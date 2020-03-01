@@ -1,0 +1,19 @@
+{
+  "name": "js",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "start": "cross-env DEBUG=app* node app.js",
+    "test": "cross-env NODE_ENV=test DEBUG=app* mocha app.test.js"
+  },
+  "dependencies": {
+    "cross-env": "^7.0.0",
+    "debug": "^4.1.1",
+    "dotenv": "^8.2.0",
+    "lodash": "^4.17.15"
+  },
+  "devDependencies": {
+    "chai": "^4.2.0"
+  }
+}

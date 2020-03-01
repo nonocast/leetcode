@@ -8,40 +8,79 @@ const debug = require('debug')('app');
  *     this.next = null;
  * }
  */
+function ListNode(val) {
+  this.val = val;
+  this.next = null;
+  this.valueOf = () => {
+    let digits = [];
+    let node = this;
+
+    do {
+      digits.push(node.val);
+    } while ((node = node.next) !== null)
+
+
+    return Number.parseInt(digits.reverse().join(''));
+  }
+}
+
 /**
+ * @param {Number} number
+ * @return {ListNode}
+ * 
+ * example: 123 => ListNode [3, 2, 1]
+ */
+function buildList(number) {
+  let digits = (new String(number)).split('');
+  let result = null;
+  for (let each of digits) {
+    let p = new ListNode(Number.parseInt(each));
+    p.next = result;
+    result = p;
+  }
+  return result;
+}
+
+/**
+ * 思路:
+ * 1. 将节点对应的位相加存到新链表
+ * 2. 考虑l1, l2长度不一致，缺失补0
+ * 3. 设计进位机制
+ * 
  * @param {ListNode} l1
  * @param {ListNode} l2
  * @return {ListNode}
  */
-var addTwoNumbers = function (l1, l2) {
-  let result = [];
-
-  // 进位标志 - carry flag
-  let carry = false;
-
-  let len = Math.max(l1.length, l2.length) + 1;
-
-  for (let i = 0; i < len; ++i) {
-    let op1 = l1.length > i ? l1[i] : 0;
-    let op2 = l2.length > i ? l2[i] : 0;
-    let v = op1 + op2;
-    if (carry) {
-      v += 1;
-      carry = false;
-    }
-    carry = v > 9;
-    result.push(v % 10);
-  }
-
-  if (result[result.length - 1] === 0) {
-    result = result.slice(0, result.length - 1);
-  }
-
-  return result;
+let addTwoNumbers = (l1, l2) => {
+  return add(l1, l2, false);
 };
 
-if (!module.parent) {
-  debug(addTwoNumbers([1], [9]));
+/**
+ * @param {ListNode} l1
+ * @param {ListNode} l2
+ * @param {Boolean} carry
+ */
+
+let add = (l1, l2, carry) => {
+  let v1 = l1 ? l1.val : 0;
+  let v2 = l2 ? l2.val : 0;
+  let val = v1 + v2 + (carry ? 1 : 0);
+  let node = new ListNode(val % 10);
+  if (l1 || l2 || carry) {
+    node.next = add(l1 && l1.next, l2 && l2.next, val > 9);
+    return node;
+  }
+  return null;
 }
 
-module.exports = addTwoNumbers;
+if (!module.parent) {
+  let p1 = buildList(342);
+  let p2 = buildList(465);
+  let result = addTwoNumbers(p1, p2);
+  debug(result);
+}
+
+module.exports = {
+  addTwoNumbers,
+  buildList
+}
